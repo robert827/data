@@ -219,5 +219,3 @@ data=pd.DataFrame({
 
 print("資料數量",data.size-10) 
 
-abc=pd.DataFrame({polynomial.index[1]:blue,})
-polynomial[0]

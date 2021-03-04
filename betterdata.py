@@ -222,4 +222,3 @@ data=pd.Series({
 print("資料數量",data.size-1) #為了排版多一個highest=1 故-1個資料數量
 print("前幾高pearson",data.nlargest(number+1))   #查看前幾高的參數  +1 是為了要加highest的原因
 polynomial=data.nlargest(number+1)
-print("所使用的參數",polynomial)
