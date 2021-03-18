@@ -58,7 +58,3 @@ def ln_divide(n1, n2):
     value = np.log(n1/n2)
     p = stats.pearsonr(value, substance)
     return abs(p[0])
-
-
-if __name__ == '__main__':
-    main()
