@@ -9,24 +9,25 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from value_testfunction import value_normal, value_ln_normal, value_plus, value_minus, value_ln_plus, value_ln_minus, value_divide, value_ln_divide
-from polynomialfunction import substance
+from polynomialfunction import substance, name
 from polynomialfunction import normal, ln_normal, plus, minus, ln_plus, ln_minus, divide, ln_divide
 import numpy as np
 import pandas as pd
 from scipy.stats import stats
-from timeout import set_time_limit
+import time
+start_time = time.time()
+# from timeout import set_time_limit
 #number = int(input("特徵數量(整數):"))
 best = dict({'R2': 0, '常數項': 0, '係數': 0, '預測': 0, '測試': 0, '特徵組合': 0})
-
+df = pd.read_excel('data.xlsx', index_col=False)
+b = df['blue']
+g = df['green']
+r = df['red']
+edge = df['rededge']
+n = df['nir']
 for j in range(1, 11):  # 依序前1到前10特徵參數的迴圈
     number = j
     print(number)
-    df = pd.read_excel('data.xlsx', index_col=False)
-    b = df['blue']
-    g = df['green']
-    r = df['red']
-    edge = df['rededge']
-    n = df['nir']
 
     data = pd.Series({  # 進行皮爾森指數比較的資料庫
         'highest': 1,
@@ -214,10 +215,12 @@ for j in range(1, 11):  # 依序前1到前10特徵參數的迴圈
     dataset = finaldata
     X = dataset[:, 1:]
     y = dataset[:, 0]
+    patient_max = 10000
     for k in range(0, 3000):  # 每個計算都算3000次 算是經驗次數
         print(k)
         score = 0
-        while (score > 1 or score < 0.00001):  # 設定回歸公式的決定係數 分數介於1~0.00001 之間算一次運算
+        patient = 0  # 程式除錯運算次數名稱
+        while (score < 0.3):  # 設定回歸公式的決定係數 分數介於1~0.00001 之間算一次運算
             # Importing the dataset
             # Splitting the dataset into the Training set and Test set
             X_train, X_test, y_train, y_test = train_test_split(
@@ -242,6 +245,16 @@ for j in range(1, 11):  # 依序前1到前10特徵參數的迴圈
             if best['R2'] < point['R2']:
                 best = point.copy()
 
+            patient += 1  # 程式除錯運算次數疊加
+
+            if patient == patient_max:
+                print("FAILED")
+                break  # 跳出 while (1>score>0.5)
+            elif patient % 1000 == 0:
+                print("tried {}/{}".format(patient, patient_max))
+        if patient == patient_max:
+            break  # 跳出 for k in range(0, 3000)
+
 print('決定係數', best['R2'])
 
 # 運算各個參數
@@ -251,4 +264,13 @@ print('決定係數', best['R2'])
 regression_function = ''
 for i in range(0, len(best['特徵組合'])):
     regression_function += best['特徵組合'][i]+"*"+"("+str(best['係數'][i])+")"+"+"
-regression_function = regression_function+"("+str(best['常數項'])+")"
+regression_function = name+"="+regression_function+"("+str(best['常數項'])+")"
+end_time = time.time()
+total_time = end_time-start_time
+
+# %%
+print("決定係數", best['R2'])
+print("實際值", best['測試'])
+print("預測值", best['預測'])
+print("使用的特徵組合", best['特徵組合'])
+print("迴歸公式", regression_function)
