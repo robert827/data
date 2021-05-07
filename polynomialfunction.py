@@ -10,6 +10,7 @@ import numpy as np
 df = pd.read_excel('data.xlsx', index_col=False)
 # 種類跟數量
 substance = input("代測物質:")
+name=substance
 substance = df[substance]
 
 
@@ -58,4 +59,3 @@ def ln_divide(n1, n2):
     value = np.log(n1/n2)
     p = stats.pearsonr(value, substance)
     return abs(p[0])
-
