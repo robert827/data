@@ -83,7 +83,7 @@ def upper_lower_limit(substance):
 
     substance.sort()
    
-    substance_min=math.floor(substance[int(len(substance)*0.01)])
+    substance_min=math.floor(substance[int(len(substance)*0.1)])
     if substance_min <0:
         substance_min=0
     substance_max=(math.ceil(substance[int(len(substance)*0.8)]))
